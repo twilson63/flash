@@ -28,6 +28,15 @@ export const list = () =>
       }
     ])
 
+export const get = id =>
+  fetch(`${url}/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Basic ${token}`
+    },
+    method: 'GET'
+  }).then(res => res.json())
+
 export const put = card =>
   /* eslint-disable-next-line no-underscore-dangle */
   fetch(`${url}/${card._id}`, {

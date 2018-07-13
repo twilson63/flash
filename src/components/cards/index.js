@@ -7,7 +7,7 @@ import { map } from 'ramda'
 
 import Header from '../shared/header'
 
-const Cards = () => (
+const Cards = ({ history }) => (
   <Component
     initialState={{ cards: [] }}
     didMount={async ({ setState }) => setState({ cards: await list() })}
@@ -18,7 +18,13 @@ const Cards = () => (
         <List>
           {map(
             card => (
-              <ListItem>
+              <ListItem
+                key={card._id}
+                button
+                onClick={e => {
+                  history.push('/cards/' + card._id)
+                }}
+              >
                 <ListItemText>{card.term}</ListItemText>
               </ListItem>
             ),
