@@ -47,3 +47,14 @@ export const put = card =>
     method: 'PUT',
     body: JSON.stringify(card)
   }).then(res => res.json())
+
+export const remove = card =>
+  /* eslint-disable-next-line no-underscore-dangle */
+  fetch(`${url}/${card._id}?rev=${card._rev}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Basic ${token}`
+    },
+    method: 'DELETE',
+    body: JSON.stringify(card)
+  }).then(res => res.json())

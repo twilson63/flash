@@ -1,10 +1,10 @@
 import React from 'react'
 import Component from '@reactions/component'
-import { get } from '../../lib/cards'
+import { get, remove } from '../../lib/cards'
 import { Link } from 'react-router-dom'
 import { Typography, withStyles, Button } from '@material-ui/core'
 
-const Show = ({ match, classes }) => (
+const Show = ({ match, classes, history }) => (
   <Component
     initialState={{ card: null }}
     didMount={({ setState }) =>
@@ -22,6 +22,15 @@ const Show = ({ match, classes }) => (
             <Typography variant="subheading">{state.card.subject}</Typography>
             <Button to={`/cards/${state.card._id}/edit`} component={Link}>
               Edit
+            </Button>
+            <Button
+              onClick={e => {
+                if (confirm('Are you sure?')) {
+                  remove(state.card).then(res => history.push('/cards'))
+                }
+              }}
+            >
+              Remove
             </Button>
             <Button to={`/cards`} component={Link}>
               List
