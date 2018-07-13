@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core'
 import { Link, Redirect } from 'react-router-dom'
 import { merge } from 'ramda'
-import { put, get } from '../../lib/cards'
+import { put } from '../../lib/cards'
 
 const emptyCard = {
   term: '',
@@ -20,27 +20,19 @@ const emptyCard = {
   subject: ''
 }
 
-const Form = ({ classes, match }) => (
-  <Component
-    didMount={({ setState }) => {
-      if (match.params.id) {
-        setState({ loading: true })
-        get(match.params.id).then(card => setState({ card, loading: false }))
-      }
-    }}
-    initialState={{ card: emptyCard, redirect: false, loading: true }}
-  >
+const Form = ({ classes }) => (
+  <Component initialState={{ card: emptyCard, redirect: false }}>
     {({ state, setState }) => (
       <React.Fragment>
         {state.redirect ? <Redirect to="/cards" /> : null}
-        {state.loading ? <div>Loading...</div> : null}
+
         <main className={classes.root}>
           <div>
             <Typography className={classes.title} variant="headline">
               Flash Card
             </Typography>
             <Typography variant="caption">
-              Add or Update a flash card by specifying a term and definition.
+              Create a new flash card by specifying a term and definition.
             </Typography>
           </div>
           <form
@@ -105,13 +97,8 @@ const Form = ({ classes, match }) => (
               </Select>
             </FormControl>
             <div className={classes.buttons}>
-              <Button type="submit">
-                {state.card._id ? 'Update' : 'Create'} Card
-              </Button>
-              <Button
-                to={state.card._id ? `/cards/${state.card._id}` : '/cards'}
-                component={Link}
-              >
+              <Button type="submit">Create Card</Button>
+              <Button to="/cards" component={Link}>
                 Cancel
               </Button>
             </div>
