@@ -1,7 +1,8 @@
 import React from 'react'
 import Component from '@reactions/component'
 import { get } from '../../lib/cards'
-import { Typography, withStyles } from '@material-ui/core'
+import { Link } from 'react-router-dom'
+import { Typography, withStyles, Button } from '@material-ui/core'
 
 const Show = ({ match, classes }) => (
   <Component
@@ -18,6 +19,13 @@ const Show = ({ match, classes }) => (
           <div className={classes.root}>
             <Typography variant="title">{state.card.term}</Typography>
             <Typography variant="caption">{state.card.definition}</Typography>
+            <Typography variant="subheading">{state.card.subject}</Typography>
+            <Button to={`/cards/${state.card._id}/edit`} component={Link}>
+              Edit
+            </Button>
+            <Button to={`/cards`} component={Link}>
+              List
+            </Button>
           </div>
         )}
       </React.Fragment>
