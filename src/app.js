@@ -7,6 +7,10 @@ import Cards from './components/cards'
 import CardForm from './components/cards/form'
 import CardShow from './components/cards/show'
 
+import Subjects from './components/subjects'
+import SubjectForm from './components/subjects/form'
+import SubjectShow from './components/subjects/show'
+
 const App = props => (
   <React.Fragment>
     <CssBaseline />
@@ -17,6 +21,10 @@ const App = props => (
         <Route path="/cards/:id/edit" component={CardForm} />
         <Route path="/cards/:id" component={CardShow} />
         <Route path="/cards" component={Cards} />
+        <Route path="/subjects/new" component={SubjectForm} />
+        <Route path="/subjects/:id/edit" component={SubjectForm} />
+        <Route path="/subjects/:id" component={SubjectShow} />
+        <Route path="/subjects" component={Subjects} />
       </Switch>
     </BrowserRouter>
   </React.Fragment>

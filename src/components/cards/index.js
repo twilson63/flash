@@ -6,7 +6,7 @@ import { list } from '../../lib/cards'
 import { map } from 'ramda'
 
 import Header from '../shared/header'
-
+// TODO: filter by subject id
 const Cards = ({ history }) => (
   <Component
     initialState={{ cards: [] }}
@@ -14,7 +14,7 @@ const Cards = ({ history }) => (
   >
     {({ state }) => (
       <React.Fragment>
-        <Header />
+        <Header to="/cards/new" />
         <List>
           {map(
             card => (
