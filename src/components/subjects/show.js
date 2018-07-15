@@ -33,7 +33,10 @@ const Show = ({ match, classes, history }) => (
             >
               Remove
             </Button>
-            <Button to={`/cards?subject=${state.subject._id}`} component={Link}>
+            <Button
+              to={`/cards?subjectId=${state.subject._id}`}
+              component={Link}
+            >
               Cards
             </Button>
             <Button to={`/subjects`} component={Link}>

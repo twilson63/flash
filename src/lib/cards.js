@@ -1,4 +1,6 @@
 /* global fetch */
+/* global btoa */
+import { merge } from 'ramda'
 
 const url = process.env.DB
 const user = process.env.USERNAME
@@ -10,14 +12,18 @@ const headers = {
   authorization: `Basic ${token}`
 }
 
-export const list = () =>
-  fetch(`${url}/_find`, {
+export const list = subjectId => {
+  let selector = {
+    type: 'card'
+  }
+  if (subjectId) {
+    selector = merge(selector, { subjectId })
+  }
+  return fetch(`${url}/_find`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
-      selector: {
-        type: 'card'
-      }
+      selector
     })
   })
     .then(res => res.json())
@@ -28,6 +34,7 @@ export const list = () =>
         term: 'No Cards Found'
       }
     ])
+}
 
 export const get = id =>
   fetch(`${url}/${id}`, {

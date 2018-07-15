@@ -1,5 +1,6 @@
 import React from 'react'
 import Component from '@reactions/component'
+import { Formik, Form, Field } from 'formik'
 import {
   TextField,
   Button,
@@ -11,114 +12,135 @@ import {
   MenuItem
 } from '@material-ui/core'
 import { Link, Redirect } from 'react-router-dom'
-import { merge } from 'ramda'
+import { merge, map } from 'ramda'
 import { put, get } from '../../lib/cards'
+import { list } from '../../lib/subjects'
+import slugify from '../../lib/slugify'
+import qsparse from '../../lib/qs-parse'
 
 const emptyCard = {
   term: '',
   definition: '',
-  subject: ''
+  subjectId: ''
 }
 
-const Form = ({ classes, match }) => (
+const CardForm = ({ classes, match, location }) => (
   <Component
     didMount={({ setState }) => {
+      const query = qsparse(location.search)
       if (match.params.id) {
-        setState({ loading: true })
         get(match.params.id).then(card => setState({ card, loading: false }))
+      } else {
+        setState(state => ({
+          card: merge(state.card, { subjectId: query.subjectId || '' }),
+          loading: false
+        }))
       }
     }}
-    initialState={{ card: emptyCard, redirect: false, loading: true }}
+    initialState={{
+      subjects: [],
+      card: emptyCard,
+      redirect: false,
+      loading: true
+    }}
   >
-    {({ state, setState }) => (
-      <React.Fragment>
-        {state.redirect ? <Redirect to="/cards" /> : null}
-        {state.loading ? <div>Loading...</div> : null}
-        <main className={classes.root}>
-          <div>
-            <Typography className={classes.title} variant="headline">
-              Flash Card
-            </Typography>
-            <Typography variant="caption">
-              Add or Update a flash card by specifying a term and definition.
-            </Typography>
-          </div>
-          <form
-            className={classes.form}
-            onSubmit={e => {
-              e.preventDefault()
-              const card = merge(state.card, {
-                type: 'card',
-                _id: `card-${state.card.term}`
-              })
-              put(card).then(res => {
-                if (res.ok) {
-                  setState({
-                    redirect: true
-                  })
-                }
-              })
-            }}
-          >
-            <TextField
-              label="Term"
-              value={state.card.term}
-              onChange={e => {
-                const card = merge(state.card, { term: e.target.value })
-                setState({ card })
-              }}
-            />
-            <TextField
-              multiline
-              label="Definition"
-              value={state.card.definition}
-              onChange={e => {
-                const card = merge(state.card, { definition: e.target.value })
-                setState({ card })
-              }}
-            />
-            <FormControl>
-              <InputLabel>Subject</InputLabel>
-              <Select
-                value={state.card.subject}
-                onChange={e => {
-                  const card = merge(state.card, { subject: e.target.value })
-                  setState({ card })
-                }}
-              >
-                <MenuItem value={'js-2017'}>JavaScript</MenuItem>
-                <MenuItem value={'fp-ramda'}>Functional</MenuItem>
-                <MenuItem value={'command-line'}>Command-line</MenuItem>
-                <MenuItem value={'nodejs'}>NodeJS</MenuItem>
-                <MenuItem value={'http-json'}>HTTP/JSON</MenuItem>
-                <MenuItem value={'rest-api'}>REST API</MenuItem>
-                <MenuItem value={'nosql'}>NoSQL</MenuItem>
-                <MenuItem value={'sql'}>SQL</MenuItem>
-                <MenuItem value={'react'}>
-                  Component Architecture (React)
-                </MenuItem>
-                <MenuItem value={'redux'}>
-                  App State Management (Redux)
-                </MenuItem>
-                <MenuItem value={'material'}>UX (Material-UI)</MenuItem>
-                <MenuItem value={'flexbox'}>Styles (flexbox)</MenuItem>
-              </Select>
-            </FormControl>
-            <div className={classes.buttons}>
-              <Button type="submit">
-                {state.card._id ? 'Update' : 'Create'} Card
-              </Button>
-              <Button
-                to={state.card._id ? `/cards/${state.card._id}` : '/cards'}
-                component={Link}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        </main>
-      </React.Fragment>
-    )}
+    {({ state, setState }) => {
+      if (state.loading) {
+        return <div>Loading...</div>
+      }
+      if (state.redirect) {
+        return <Redirect to={`/cards?subjectId=${state.card.subjectId}`} />
+      }
+
+      return (
+        <Formik
+          initialValues={state.card}
+          validate={values => {
+            let errors = {}
+            if (values.term.length < 1) {
+              errors.term = 'Required'
+            }
+            if (values.definition.length < 1) {
+              errors.definition = 'Required'
+            }
+            return errors
+          }}
+          onSubmit={values => {
+            const card = merge(values, {
+              type: 'card',
+              _id: `card-${slugify(values.term)}`
+            })
+
+            put(card).then(res => {
+              if (res.ok) {
+                setState({
+                  redirect: true
+                })
+              }
+            })
+          }}
+          component={() => (
+            <React.Fragment>
+              <main className={classes.root}>
+                <div>
+                  <Typography className={classes.title} variant="headline">
+                    Flash Card
+                  </Typography>
+                  <Typography variant="caption">
+                    Add or Update a flash card by specifying a term and
+                    definition.
+                  </Typography>
+                </div>
+                <Form className={classes.form}>
+                  <Field
+                    name="term"
+                    render={({ field, form: { errors, touched } }) => (
+                      <TextField
+                        label="Term"
+                        required
+                        error={
+                          touched.term && errors.term && errors.term.length > 0
+                        }
+                        helperText={errors.term}
+                        {...field}
+                      />
+                    )}
+                  />
+                  <Field
+                    name="definition"
+                    render={({ field, form: { errors, touched } }) => (
+                      <TextField
+                        multiline
+                        rowsMax={12}
+                        required
+                        label="Definition"
+                        error={touched.definition && errors.definition}
+                        {...field}
+                      />
+                    )}
+                  />
+                  <div className={classes.buttons}>
+                    <Button type="submit">
+                      {state.card._id ? 'Update' : 'Create'} Card
+                    </Button>
+                    <Button
+                      to={
+                        state.card._id
+                          ? `/cards/${state.card._id}`
+                          : `/cards?subjectId=${state.card.subjectId}`
+                      }
+                      component={Link}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </Form>
+              </main>
+            </React.Fragment>
+          )}
+        />
+      )
+    }}
   </Component>
 )
 
@@ -141,4 +163,4 @@ const styles = {
   }
 }
 
-export default withStyles(styles)(Form)
+export default withStyles(styles)(CardForm)

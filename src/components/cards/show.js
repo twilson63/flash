@@ -26,13 +26,18 @@ const Show = ({ match, classes, history }) => (
             <Button
               onClick={e => {
                 if (confirm('Are you sure?')) {
-                  remove(state.card).then(res => history.push('/cards'))
+                  remove(state.card).then(res =>
+                    history.push(`/cards?subjectId=${state.card.subjectId}`)
+                  )
                 }
               }}
             >
               Remove
             </Button>
-            <Button to={`/cards`} component={Link}>
+            <Button
+              to={`/cards?subjectId=${state.card.subjectId}`}
+              component={Link}
+            >
               List
             </Button>
           </div>

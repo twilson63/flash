@@ -4,8 +4,8 @@ import { Formik, Form, Field } from 'formik'
 import { withStyles, TextField, Button, Typography } from '@material-ui/core'
 import { merge } from 'ramda'
 
-import { put } from '../../lib/subjects'
-import { get } from '../../lib/cards'
+import { get, put } from '../../lib/subjects'
+import slugify from '../../lib/slugify'
 
 class SubjectForm extends React.Component {
   state = {
@@ -28,9 +28,17 @@ class SubjectForm extends React.Component {
     return (
       <Formik
         initialValues={this.state.subject}
+        validate={values => {
+          let errors = {}
+
+          if (values.name.length < 1) {
+            errors.name = 'Required'
+          }
+          return errors
+        }}
         onSubmit={(values, actions) => {
           const subject = merge(values, {
-            _id: `subject-${values.name.toLowerCase()}`,
+            _id: `subject-${slugify(values.name)}`,
             type: 'subject'
           })
           put(subject).then(res => {
@@ -50,12 +58,28 @@ class SubjectForm extends React.Component {
             <Form className={classes.form}>
               <Field
                 name="name"
-                render={({ field }) => <TextField label="Name" {...field} />}
+                render={({ field, form: { errors, touched } }) => {
+                  return (
+                    <TextField
+                      className={classes.textfield}
+                      label="Name"
+                      required
+                      error={touched.name && errors.name}
+                      helperText={errors.name}
+                      {...field}
+                    />
+                  )
+                }}
               />
               <Field
                 name="description"
                 render={({ field }) => (
-                  <TextField multiline label="Description" {...field} />
+                  <TextField
+                    className={classes.textfield}
+                    multiline
+                    label="Description"
+                    {...field}
+                  />
                 )}
               />
               <div>
@@ -87,6 +111,9 @@ const styles = {
   form: {
     display: 'flex',
     flexDirection: 'column'
+  },
+  textfield: {
+    margin: '16px 0px 16px 0px'
   }
 }
 
