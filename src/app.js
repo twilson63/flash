@@ -10,6 +10,7 @@ import CardShow from './components/cards/show'
 import Subjects from './components/subjects'
 import SubjectForm from './components/subjects/form'
 import SubjectShow from './components/subjects/show'
+import Config from './components/play'
 
 const App = props => (
   <React.Fragment>
@@ -25,6 +26,7 @@ const App = props => (
         <Route path="/subjects/:id/edit" component={SubjectForm} />
         <Route path="/subjects/:id" component={SubjectShow} />
         <Route path="/subjects" component={Subjects} />
+        <Route path="/play/new" component={Config} />
       </Switch>
     </BrowserRouter>
   </React.Fragment>

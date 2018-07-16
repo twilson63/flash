@@ -16,6 +16,9 @@ const Start = ({ classes }) => (
     <Typography variant="display2">Flash</Typography>
     <Typography variant="caption">Time to Learn</Typography>
     <div>
+      <Button component={Link} to="/play/new">
+        Play
+      </Button>
       <Button component={Link} to="/subjects">
         Create
       </Button>

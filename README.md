@@ -6,14 +6,18 @@ Using flash cards can be a quick way to study terms and definitions of popular c
 
 The app will consist of two modes:
 
-* play
-* create
+- play
+- create
 
 ### Play Mode
 
 When in play mode, you can choose a specific subject or an all subjects game. When you start a game, it will randomly pull 20 flash cards and give you one at a time, the card will show the term and then you can flip to the definition and record if you got it right or not. Then it will proceed to the next card.
 
 At the end of the session, it will tally how many you got right and show you a percent.
+
+### Play Mode
+
+When you click the play button, you will be taken to a config screen to select the subjects you want to include in your game, then when you choose start it will randomly select 10 cards from the subjects you selected and build a game. The first term will appear and you try to answer, when done, you click the flip icon to flip from the term to the definition and click if you got it right or wrong, then it will switch to the next card. This will repeat until you finished all ten cards and then the app will show you your results with an option to play again.
 
 ### Create Mode
 
@@ -25,23 +29,20 @@ What is a card?
 
 A card consists of the following:
 
-* term (text or picture?)
-* subject 
-* definition
-* difficulty?
-
+- term (text or picture?)
+- subject
+- definition
+- difficulty?
 
 ### Components
 
-* Start
-* Play Setup
-* Show Term
-* Show Definition
+- Start
+- Play Setup
+- Show Term
+- Show Definition
 
-* List Subjects
-* Subject Form
-* List Cards By Subject
-* Card Form
-* Card Stats
-
-
+- List Subjects
+- Subject Form
+- List Cards By Subject
+- Card Form
+- Card Stats

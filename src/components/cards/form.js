@@ -1,20 +1,10 @@
 import React from 'react'
 import Component from '@reactions/component'
 import { Formik, Form, Field } from 'formik'
-import {
-  TextField,
-  Button,
-  Typography,
-  withStyles,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
-} from '@material-ui/core'
+import { TextField, Button, Typography, withStyles } from '@material-ui/core'
 import { Link, Redirect } from 'react-router-dom'
-import { merge, map } from 'ramda'
+import { merge } from 'ramda'
 import { put, get } from '../../lib/cards'
-import { list } from '../../lib/subjects'
 import slugify from '../../lib/slugify'
 import qsparse from '../../lib/qs-parse'
 
@@ -56,7 +46,7 @@ const CardForm = ({ classes, match, location }) => (
         <Formik
           initialValues={state.card}
           validate={values => {
-            let errors = {}
+            const errors = {}
             if (values.term.length < 1) {
               errors.term = 'Required'
             }
