@@ -70,8 +70,9 @@ const Form = ({ classes }) => (
               }}
             />
             <FormControl>
-              <InputLabel>Subject</InputLabel>
+              <InputLabel htmlFor="subject">Subject</InputLabel>
               <Select
+                inputProps={{ id: 'subject' }}
                 value={state.card.subject}
                 onChange={e => {
                   const card = merge(state.card, { subject: e.target.value })
